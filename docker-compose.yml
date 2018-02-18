@@ -1,0 +1,31 @@
+version: '2'
+volumes:
+  data_sql:    
+
+services:
+
+  database:
+    image: mysql
+    container_name: testdb
+    command: mysqld --user=root --verbose
+    volumes:
+      - ./mysql:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "testdb"
+      MYSQL_USER: "test"
+      MYSQL_PASSWORD: "test"
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+
+
+  webapp:
+    image: mateosau/php_mysql
+    container_name: webapp
+    ports:
+      - "80:80"
+    volumes:
+      - ./webapp/login.php:/var/www/html/login.php
+    links:
+      - database
